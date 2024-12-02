@@ -61,14 +61,18 @@ func partOne(arrays [][]int)  {
 func partTwo(arrays [][]int)  {
 	count := 0
 	for _, array := range arrays {
-		for i := range array {
-			newArray:= append([]int(nil), array[:i]...) 
-			newArray = append(newArray, array[i+1:]...)
-			if isSafe(newArray) {
-				count++
-				break
+		if isSafe(array) {
+			count++
+		} else {
+			for i := range array {
+				newArray:= append([]int(nil), array[:i]...) 
+				newArray = append(newArray, array[i+1:]...)
+				if isSafe(newArray) {
+					count++
+					break
+				}
 			}
-		}
+		}	
 	}
 	fmt.Println(count)
 }
