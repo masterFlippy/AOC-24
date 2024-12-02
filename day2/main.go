@@ -42,30 +42,57 @@ func main() {
 	if err := scanner.Err(); err != nil {
 		fmt.Println("Error reading file:", err)
 	}
-	count := 0
-	for _, array := range arrays {
 
-		if isAscendingUsingSort(array) {
-			if(checkLimit(array,1, 3)) {
-				count++
-			}
-		} else if isDescendingUsingSort(array) {
-			if(checkLimit(array,1, 3)) {
-				count++
-			}
-		} 
-	}
-	fmt.Println(count)
+	partOne(arrays)
+	partTwo(arrays)
 
 }
 
-func isAscendingUsingSort(array []int) bool {
+func partOne(arrays [][]int)  {
+	count := 0
+	for _, array := range arrays {
+		if isSafe(array) {
+			count++
+		}
+	}
+	fmt.Println(count)
+}
+
+func partTwo(arrays [][]int)  {
+	count := 0
+	for _, array := range arrays {
+		for i := range array {
+			newArray:= append([]int(nil), array[:i]...) 
+			newArray = append(newArray, array[i+1:]...)
+			if isSafe(newArray) {
+				count++
+				break
+			}
+		}
+	}
+	fmt.Println(count)
+}
+
+func isSafe(array []int) bool {
+	if isAscending(array) {
+		if(checkLimit(array,1, 3)) {
+			return true
+		}
+	} else if isDescending(array) {
+		if(checkLimit(array,1, 3)) {
+			return true
+		}
+	} 
+	return false
+}
+
+func isAscending(array []int) bool {
 	sorted := append([]int{}, array...) 
 	sort.Ints(sorted)
 	return reflect.DeepEqual(array, sorted)
 }
 
-func isDescendingUsingSort(array []int) bool {
+func isDescending(array []int) bool {
 	sorted := append([]int{}, array...)
 	sort.Sort(sort.Reverse(sort.IntSlice(sorted)))
 	return reflect.DeepEqual(array, sorted)
