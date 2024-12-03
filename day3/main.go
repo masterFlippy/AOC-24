@@ -25,8 +25,7 @@ func main() {
 }
 
 func partOne(content string)  {
-	pattern := `mul\((\d{1,3}),(\d{1,3})\)`
-	re := regexp.MustCompile(pattern)
+	re := regexp.MustCompile(`mul\((\d{1,3}),(\d{1,3})\)`)
 	matches := re.FindAllStringSubmatch(content, -1)
 
 	if len(matches) == 0 {
@@ -36,9 +35,7 @@ func partOne(content string)  {
 
 	sum := 0
 	for _, match := range matches {
-		num1, _ := strconv.Atoi(match[1])
-		num2, _ := strconv.Atoi(match[2])
-		sum += num1 * num2
+		sum += multiply(match[1], match[2])
 	}
 	
 
@@ -46,8 +43,7 @@ func partOne(content string)  {
 }
 
 func partTwo(content string)  {
-	pattern := `(?:mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don't\(\))`
-	re := regexp.MustCompile(pattern)
+	re := regexp.MustCompile(`(?:mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don't\(\))`)
 	matches := re.FindAllStringSubmatch(content, -1)
 	
 	if len(matches) == 0 {
@@ -58,11 +54,7 @@ func partTwo(content string)  {
 	sum := 0
 	shouldDo := true
 	for _, match := range matches {
-		text := match[0]
-		num1, _ := strconv.Atoi(match[1])
-		num2, _ := strconv.Atoi(match[2])
-
-		switch text {
+		switch match[0] {
 		case "don't()":
 			shouldDo = false
 		case "do()":
@@ -70,11 +62,17 @@ func partTwo(content string)  {
 		}
 	
 		if shouldDo {
-			sum += num1 * num2
+			sum += multiply(match[1], match[2])
 		}
 	}
 	
 
 	fmt.Println("Part two: ", sum)
 
+}
+
+func multiply(a, b string) int {
+    num1, _ := strconv.Atoi(a)
+    num2, _ := strconv.Atoi(b)
+    return num1 * num2
 }
