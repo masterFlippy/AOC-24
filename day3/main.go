@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"log"
 	"os"
@@ -10,18 +9,14 @@ import (
 )
 
 func main() {
-    file, err := os.Open("input.txt")
+    file, err := os.ReadFile("input.txt")
     if err != nil {
-        log.Fatal(err)
+        log.Fatalf("Error reading file: %v", err)
     }
-    defer file.Close()
-    buf := new(bytes.Buffer)
-    buf.ReadFrom(file)
-    content := buf.String()
+    content := string(file)
 
     partOne(content)
     partTwo(content)
-
 }
 
 func partOne(content string)  {
