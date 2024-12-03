@@ -19,9 +19,6 @@ func main() {
     buf.ReadFrom(file)
     content := buf.String()
 
-
-
-
     partOne(content)
     partTwo()
 
@@ -48,8 +45,8 @@ func partOne(content string)  {
 	for _, tuple := range tuples {
 		sum += tuple[0] * tuple[1]
 	}
-	fmt.Println("Part One: ", sum)
 
+	fmt.Println("Part One: ", sum)
 }
 
 func partTwo()  {
