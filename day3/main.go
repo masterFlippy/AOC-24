@@ -25,32 +25,17 @@ func main() {
 }
 
 func partOne(content string)  {
-	re := regexp.MustCompile(`mul\((\d{1,3}),(\d{1,3})\)`)
-	matches := re.FindAllStringSubmatch(content, -1)
-
-	if len(matches) == 0 {
-		fmt.Println("No matches found")
-		return
-	}
-
+	matches := getMatches(`mul\((\d{1,3}),(\d{1,3})\)`, content)
 	sum := 0
 	for _, match := range matches {
 		sum += multiply(match[1], match[2])
 	}
-	
 
 	fmt.Println("Part One: ", sum)
 }
 
 func partTwo(content string)  {
-	re := regexp.MustCompile(`(?:mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don't\(\))`)
-	matches := re.FindAllStringSubmatch(content, -1)
-	
-	if len(matches) == 0 {
-		fmt.Println("No matches found")
-		return
-	}
-
+	matches := getMatches(`(?:mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don't\(\))`, content)
 	sum := 0
 	shouldDo := true
 	for _, match := range matches {
@@ -66,9 +51,17 @@ func partTwo(content string)  {
 		}
 	}
 	
-
 	fmt.Println("Part two: ", sum)
+}
 
+func getMatches(regex, content string) [][]string {
+	re := regexp.MustCompile(regex)
+	matches := re.FindAllStringSubmatch(content, -1)
+	if len(matches) == 0 {
+		fmt.Println("No matches found")
+		return nil
+	}
+	return matches
 }
 
 func multiply(a, b string) int {
