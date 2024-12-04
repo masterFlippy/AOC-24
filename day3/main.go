@@ -9,17 +9,17 @@ import (
 )
 
 func main() {
-    file, err := os.ReadFile("input.txt")
-    if err != nil {
-        log.Fatalf("Error reading file: %v", err)
-    }
-    content := string(file)
+	file, err := os.ReadFile("input.txt")
+	if err != nil {
+		log.Fatalf("Error reading file: %v", err)
+	}
+	content := string(file)
 
-    partOne(content)
-    partTwo(content)
+	partOne(content)
+	partTwo(content)
 }
 
-func partOne(content string)  {
+func partOne(content string) {
 	matches := getMatches(`mul\((\d{1,3}),(\d{1,3})\)`, content)
 	sum := 0
 	for _, match := range matches {
@@ -29,7 +29,7 @@ func partOne(content string)  {
 	fmt.Println("Part One: ", sum)
 }
 
-func partTwo(content string)  {
+func partTwo(content string) {
 	matches := getMatches(`(?:mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don't\(\))`, content)
 	sum := 0
 	shouldDo := true
@@ -40,12 +40,12 @@ func partTwo(content string)  {
 		case "do()":
 			shouldDo = true
 		}
-	
+
 		if shouldDo {
 			sum += multiply(match[1], match[2])
 		}
 	}
-	
+
 	fmt.Println("Part two: ", sum)
 }
 
@@ -60,7 +60,7 @@ func getMatches(regex, content string) [][]string {
 }
 
 func multiply(a, b string) int {
-    num1, _ := strconv.Atoi(a)
-    num2, _ := strconv.Atoi(b)
-    return num1 * num2
+	num1, _ := strconv.Atoi(a)
+	num2, _ := strconv.Atoi(b)
+	return num1 * num2
 }

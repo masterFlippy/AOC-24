@@ -19,8 +19,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-    partOne(grid)
-    partTwo(grid)
+	partOne(grid)
+	partTwo(grid)
 }
 
 func partOne(grid [][]rune) {
@@ -28,61 +28,61 @@ func partOne(grid [][]rune) {
 	reverseWord := "SAMX"
 	rows := len(grid)
 	columns := len(grid[0])
-		count := 0
-		directions := []struct{ drow, dlcolumn int }{
-			{0, 1},  //  right
-			{0, -1}, //  left
-			{1, 0},  //  down
-			{-1, 0}, //  up
-			{1, 1},  //  down-right
-			{-1, -1},//  up-left
-			{1, -1}, //  down-left
-			{-1, 1}, //  up-right
-		}
+	count := 0
+	directions := []struct{ drow, dlcolumn int }{
+		{0, 1},   //  right
+		{0, -1},  //  left
+		{1, 0},   //  down
+		{-1, 0},  //  up
+		{1, 1},   //  down-right
+		{-1, -1}, //  up-left
+		{1, -1},  //  down-left
+		{-1, 1},  //  up-right
+	}
 
-		for row := 0; row < rows; row++ {
-			for column := 0; column < columns; column++ {
-				for _, direction := range directions {
-					if checkWord(grid, row, column, direction.drow, direction.dlcolumn, rows, columns, word) {
-						count++
-					}
-					if checkWord(grid, row, column, direction.drow, direction.dlcolumn,rows, columns, reverseWord) {
-						count++
-					}
+	for row := 0; row < rows; row++ {
+		for column := 0; column < columns; column++ {
+			for _, direction := range directions {
+				if checkWord(grid, row, column, direction.drow, direction.dlcolumn, rows, columns, word) {
+					count++
+				}
+				if checkWord(grid, row, column, direction.drow, direction.dlcolumn, rows, columns, reverseWord) {
+					count++
 				}
 			}
 		}
+	}
 
-		fmt.Println("Part One: ", count / 2)
+	fmt.Println("Part One: ", count/2)
 }
 
-func partTwo(grid [][]rune)  {
-    rows := len(grid)
-    columns := len(grid[0])
+func partTwo(grid [][]rune) {
+	rows := len(grid)
+	columns := len(grid[0])
 
-    count := 0
+	count := 0
 	for row := 1; row < rows-1; row++ {
-        for column := 1; column < columns-1; column++ {
-            if grid[row][column] == 'A' { 
+		for column := 1; column < columns-1; column++ {
+			if grid[row][column] == 'A' {
 				topLeft := grid[row-1][column-1]
 				topRight := grid[row-1][column+1]
 				bottomLeft := grid[row+1][column-1]
 				bottomRight := grid[row+1][column+1]
 
-                if (topLeft == 'S' || topLeft == 'M') &&
-                    (topRight == 'S' || topRight == 'M') &&
-                    (bottomLeft == 'S' || bottomLeft == 'M') &&
-                    (bottomRight == 'S' || bottomRight == 'M') &&
+				if (topLeft == 'S' || topLeft == 'M') &&
+					(topRight == 'S' || topRight == 'M') &&
+					(bottomLeft == 'S' || bottomLeft == 'M') &&
+					(bottomRight == 'S' || bottomRight == 'M') &&
 					(topLeft != bottomRight && topRight != bottomLeft) {
-                    count++
-                }
-            }
-        }
-    }
+					count++
+				}
+			}
+		}
+	}
 	fmt.Println("Part two: ", count)
 }
 
-func getGrid(file *os.File) ([][]rune, error)  {
+func getGrid(file *os.File) ([][]rune, error) {
 	var grid [][]rune
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {

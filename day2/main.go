@@ -48,7 +48,7 @@ func main() {
 
 }
 
-func partOne(arrays [][]int)  {
+func partOne(arrays [][]int) {
 	count := 0
 	for _, array := range arrays {
 		if isSafe(array) {
@@ -58,40 +58,40 @@ func partOne(arrays [][]int)  {
 	fmt.Println(count)
 }
 
-func partTwo(arrays [][]int)  {
+func partTwo(arrays [][]int) {
 	count := 0
 	for _, array := range arrays {
 		if isSafe(array) {
 			count++
 		} else {
 			for i := range array {
-				newArray:= append([]int(nil), array[:i]...) 
+				newArray := append([]int(nil), array[:i]...)
 				newArray = append(newArray, array[i+1:]...)
 				if isSafe(newArray) {
 					count++
 					break
 				}
 			}
-		}	
+		}
 	}
 	fmt.Println(count)
 }
 
 func isSafe(array []int) bool {
 	if isAscending(array) {
-		if(checkLimit(array,1, 3)) {
+		if checkLimit(array, 1, 3) {
 			return true
 		}
 	} else if isDescending(array) {
-		if(checkLimit(array,1, 3)) {
+		if checkLimit(array, 1, 3) {
 			return true
 		}
-	} 
+	}
 	return false
 }
 
 func isAscending(array []int) bool {
-	sorted := append([]int{}, array...) 
+	sorted := append([]int{}, array...)
 	sort.Ints(sorted)
 	return reflect.DeepEqual(array, sorted)
 }

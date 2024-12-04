@@ -17,7 +17,7 @@ func main() {
 
 	var leftArr []int
 	var rightArr []int
-	
+
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		var left, right int
@@ -38,16 +38,15 @@ func main() {
 		if leftArr[i] > rightArr[i] {
 			sum += leftArr[i] - rightArr[i]
 		} else {
-			sum += rightArr[i] - leftArr[i] 
+			sum += rightArr[i] - leftArr[i]
 		}
 		count := 0
 		for j := 0; j < len(rightArr); j++ {
-            if leftArr[i] == rightArr[j] {
-                count++
-            }
-        }
+			if leftArr[i] == rightArr[j] {
+				count++
+			}
+		}
 		sum2 += count * leftArr[i]
-
 
 	}
 	fmt.Println(sum)
