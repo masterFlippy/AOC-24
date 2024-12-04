@@ -18,7 +18,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	smolbrain(grid)
 	partOne(grid)
 	partTwo(grid)
 }
@@ -106,4 +106,64 @@ func checkWord(grid [][]rune, row, column, drow, dlcolumn, rows, columns int, wo
 		}
 	}
 	return true
+}
+
+func smolbrain(grid [][]rune) {
+	rows := len(grid)
+	columns := len(grid[0])
+
+	count := 0
+	for row := 0; row < rows; row++ {
+		for column := 0; column < columns; column++ {
+			// right down diagonal
+			if row+3 < rows && column+3 < columns &&
+				((grid[row][column] == 'S' && grid[row+1][column+1] == 'A' && grid[row+2][column+2] == 'M' && grid[row+3][column+3] == 'X') ||
+					(grid[row][column] == 'X' && grid[row+1][column+1] == 'M' && grid[row+2][column+2] == 'A' && grid[row+3][column+3] == 'S')) {
+				count++
+			}
+			// left down diagonal
+			if row+3 < rows && column-3 >= 0 &&
+				((grid[row][column] == 'S' && grid[row+1][column-1] == 'A' && grid[row+2][column-2] == 'M' && grid[row+3][column-3] == 'X') ||
+					(grid[row][column] == 'X' && grid[row+1][column-1] == 'M' && grid[row+2][column-2] == 'A' && grid[row+3][column-3] == 'S')) {
+				count++
+			}
+			// right up diagonal
+			if row-3 >= 0 && column+3 < columns &&
+				((grid[row][column] == 'S' && grid[row-1][column+1] == 'A' && grid[row-2][column+2] == 'M' && grid[row-3][column+3] == 'X') ||
+					(grid[row][column] == 'X' && grid[row-1][column+1] == 'M' && grid[row-2][column+2] == 'A' && grid[row-3][column+3] == 'S')) {
+				count++
+			}
+			// left up diagonal
+			if row-3 >= 0 && column-3 >= 0 &&
+				((grid[row][column] == 'S' && grid[row-1][column-1] == 'A' && grid[row-2][column-2] == 'M' && grid[row-3][column-3] == 'X') ||
+					(grid[row][column] == 'X' && grid[row-1][column-1] == 'M' && grid[row-2][column-2] == 'A' && grid[row-3][column-3] == 'S')) {
+				count++
+			}
+			// right
+			if column+3 < columns &&
+				((grid[row][column] == 'X' && grid[row][column+1] == 'M' && grid[row][column+2] == 'A' && grid[row][column+3] == 'S') ||
+					(grid[row][column] == 'S' && grid[row][column+1] == 'A' && grid[row][column+2] == 'M' && grid[row][column+3] == 'X')) {
+				count++
+			}
+			// left
+			if column-3 >= 0 &&
+				((grid[row][column] == 'X' && grid[row][column-1] == 'M' && grid[row][column-2] == 'A' && grid[row][column-3] == 'S') ||
+					(grid[row][column] == 'S' && grid[row][column-1] == 'A' && grid[row][column-2] == 'M' && grid[row][column-3] == 'X')) {
+				count++
+			}
+			// down
+			if row+3 < rows &&
+				((grid[row][column] == 'X' && grid[row+1][column] == 'M' && grid[row+2][column] == 'A' && grid[row+3][column] == 'S') ||
+					(grid[row][column] == 'S' && grid[row+1][column] == 'A' && grid[row+2][column] == 'M' && grid[row+3][column] == 'X')) {
+				count++
+			}
+			// up
+			if row-3 >= 0 &&
+				((grid[row][column] == 'X' && grid[row-1][column] == 'M' && grid[row-2][column] == 'A' && grid[row-3][column] == 'S') ||
+					(grid[row][column] == 'S' && grid[row-1][column] == 'A' && grid[row-2][column] == 'M' && grid[row-3][column] == 'X')) {
+				count++
+			}
+		}
+	}
+	fmt.Println("Smolbrain: ", count/2)
 }
