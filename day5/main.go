@@ -85,7 +85,7 @@ func getArrays(pageNumbersLines []string, rules []map[int]int) ([][]int, [][]int
 			invalidArrays = append(invalidArrays, sortedPages)
 		} else {
 			validArrays = append(validArrays, pageArray)
-		}	
+		}
 	}
 
 	return validArrays, invalidArrays
@@ -113,7 +113,7 @@ func getMiddleValues(array [][]int) []int {
 	var middleValues []int
 	for _, array := range array {
 		middleIndex := len(array) / 2
-		middleValue  := array[middleIndex]
+		middleValue := array[middleIndex]
 		middleValues = append(middleValues, middleValue)
 	}
 	return middleValues
