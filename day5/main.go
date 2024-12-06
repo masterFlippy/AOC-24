@@ -95,9 +95,11 @@ func sortInvalidArray(pageArray []int, rules []map[int]int) []int {
 	sort.Slice(pageArray, func(i, j int) bool {
 		for _, rule := range rules {
 			for key, value := range rule {
+				// if the previous number is the key (first in rule) and the current number is the value (second in the rule), return true
 				if pageArray[i] == key && pageArray[j] == value {
 					return true
 				}
+				// if the previous number is the value (second in rule) and the current number is the key (first in the rule), return false
 				if pageArray[i] == value && pageArray[j] == key {
 					return false
 				}
