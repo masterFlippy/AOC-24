@@ -18,11 +18,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-    copiedGrid := make([][]rune, len(grid))
-    for i := range grid {
-        copiedGrid[i] = make([]rune, len(grid[i]))
-        copy(copiedGrid[i], grid[i])
-    }
+	copiedGrid := make([][]rune, len(grid))
+	for i := range grid {
+		copiedGrid[i] = make([]rune, len(grid[i]))
+		copy(copiedGrid[i], grid[i])
+	}
 
 	partOne(copiedGrid)
 	partTwo(grid)
@@ -48,8 +48,8 @@ func partOne(grid [][]rune) {
 		}
 
 		if grid[x][y] == '#' {
-			direction = (direction + 1) % 4  
-			x, y = x-directionX, y-directionY 
+			direction = (direction + 1) % 4
+			x, y = x-directionX, y-directionY
 			continue
 		}
 
@@ -80,17 +80,17 @@ func partTwo(grid [][]rune) {
 			x, y := startX, startY
 
 			m := map[string]bool{}
-			for isInside(x + directionX, y + directionY, columns, rows) {
-				newX, newY := x + directionX, y + directionY
+			for isInside(x+directionX, y+directionY, columns, rows) {
+				newX, newY := x+directionX, y+directionY
 				if grid[newY][newX] == '#' {
 					key := fmt.Sprintf("%d:%d:%d%d", x, y, directionX, directionY)
-			
+
 					if _, ok := m[key]; ok {
 						count++
 						break
 					}
 					m[key] = true
-			
+
 					directionX, directionY = -directionY, directionX
 					continue
 				}
