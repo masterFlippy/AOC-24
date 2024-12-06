@@ -18,19 +18,24 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+    copiedGrid := make([][]rune, len(grid))
+    for i := range grid {
+        copiedGrid[i] = make([]rune, len(grid[i]))
+        copy(copiedGrid[i], grid[i])
+    }
 
-	partOne(grid)
+	partOne(copiedGrid)
 	partTwo(grid)
 }
 
 func partOne(grid [][]rune) {
-	startX, startY, direction := findCursor(grid)
 	directions := [][2]int{
 		{-1, 0}, // up
 		{0, 1},  // right
 		{1, 0},  // down
 		{0, -1}, // left
 	}
+	startX, startY, direction := findCursor(grid)
 
 	x, y := startX, startY
 	for {
@@ -38,19 +43,16 @@ func partOne(grid [][]rune) {
 
 		x, y = x+directionX, y+directionY
 
-		// check for hitting edge of grid
 		if x < 0 || x >= len(grid) || y < 0 || y >= len(grid[0]) {
 			break
 		}
 
-		// check if hit a guard
 		if grid[x][y] == '#' {
-			direction = (direction + 1) % 4   // rotate right
-			x, y = x-directionX, y-directionY // revert the last move
+			direction = (direction + 1) % 4  
+			x, y = x-directionX, y-directionY 
 			continue
 		}
 
-		// set as visited
 		grid[x][y] = 'x'
 	}
 
@@ -58,8 +60,48 @@ func partOne(grid [][]rune) {
 }
 
 func partTwo(grid [][]rune) {
+	directions := [][2]int{
+		{0, -1}, // up
+		{1, 0},  // right
+		{0, 1},  // down
+		{-1, 0}, // left
+	}
+	rows, columns := len(grid), len(grid[0])
+	startY, startX, startDirection := findCursor(grid)
+	count := 0
 
-	fmt.Println("Part two:")
+	for column := 0; column < columns; column++ {
+		for row := 0; row < rows; row++ {
+			if grid[row][column] != '.' {
+				continue
+			}
+			grid[row][column] = '#'
+			directionX, directionY := directions[startDirection][0], directions[startDirection][1]
+			x, y := startX, startY
+
+			m := map[string]bool{}
+			for isInside(x + directionX, y + directionY, columns, rows) {
+				newX, newY := x + directionX, y + directionY
+				if grid[newY][newX] == '#' {
+					key := fmt.Sprintf("%d:%d:%d%d", x, y, directionX, directionY)
+			
+					if _, ok := m[key]; ok {
+						count++
+						break
+					}
+					m[key] = true
+			
+					directionX, directionY = -directionY, directionX
+					continue
+				}
+				x, y = newX, newY
+			}
+
+			grid[row][column] = '.'
+		}
+	}
+
+	fmt.Println("Part two: ", count)
 }
 
 func findCursor(grid [][]rune) (int, int, int) {
@@ -67,16 +109,12 @@ func findCursor(grid [][]rune) (int, int, int) {
 		for column := 0; column < len(grid[row]); column++ {
 			switch grid[row][column] {
 			case '^':
-				grid[row][column] = 'x' // change to visited
-				return row, column, 0   // up
+				return row, column, 0 // up
 			case '>':
-				grid[row][column] = 'x'
 				return row, column, 1 // right
 			case 'v':
-				grid[row][column] = 'x'
 				return row, column, 2 // down
 			case '<':
-				grid[row][column] = 'x'
 				return row, column, 3 // left
 			}
 		}
@@ -108,5 +146,8 @@ func countGrid(grid [][]rune, toCount string) int {
 			}
 		}
 	}
-	return count
+	return count + 1 // +1 for the starting position
+}
+func isInside(column, row, length, height int) bool {
+	return column < length && row < height && column >= 0 && row >= 0
 }
