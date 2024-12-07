@@ -109,18 +109,18 @@ func testCalibration(calibration []int, operators []string) bool {
 	return false
 }
 
-func generateOperatorCombos(operators []string, gaps int, currentOperators []string, operatorCombinations *[][]string) {
-	if len(currentOperators) == gaps {
-		combination := make([]string, len(currentOperators))
-		copy(combination, currentOperators)
+func generateOperatorCombos(operators []string, gaps int, current []string, operatorCombinations *[][]string) {
+	if len(current) == gaps {
+		combination := make([]string, len(current))
+		copy(combination, current)
 		*operatorCombinations = append(*operatorCombinations, combination)
 		return
 	}
 
 	for _, operator := range operators {
-		currentOperators = append(currentOperators, operator)
-		generateOperatorCombos(operators, gaps, currentOperators, operatorCombinations)
-		currentOperators = currentOperators[:len(currentOperators)-1]
+		current = append(current, operator)
+		generateOperatorCombos(operators, gaps, current, operatorCombinations)
+		current = current[:len(current)-1]
 	}
 }
 
