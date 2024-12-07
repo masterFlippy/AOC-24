@@ -23,7 +23,7 @@ func main() {
 	}
 
 	partOne(calibrations)
-	partTwo()
+	partTwo(calibrations)
 }
 
 func partOne(calibrations [][]int) {
@@ -38,8 +38,15 @@ func partOne(calibrations [][]int) {
 	fmt.Println("Part one: ", sum)
 }
 
-func partTwo() {
-	fmt.Println("Part two: ")
+func partTwo(calibrations [][]int) {
+	operators := []string{"+", "*", "||"}
+	sum := 0
+	for _, calibrationLine := range calibrations {
+		if testCalibration(calibrationLine, operators) {
+			sum += calibrationLine[0]
+		}
+	}
+	fmt.Println("Part two: ", sum)
 }
 
 func getArray(input *os.File) ([][]int, error) {
@@ -125,6 +132,8 @@ func calculate(values []int, operators []string) int {
 			result += values[i+1]
 		case "*":
 			result *= values[i+1]
+		case "||":
+			result, _ = strconv.Atoi(strconv.Itoa(result) + strconv.Itoa(values[i+1]))
 		}
 	}
 	return result
