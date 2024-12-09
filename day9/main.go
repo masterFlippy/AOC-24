@@ -7,6 +7,11 @@ import (
 	"strconv"
 )
 
+type IdBlock struct {
+	Id  int
+	Count int
+}
+
 func main() {
 	data, err := os.ReadFile("input.txt")
 	if err != nil {
@@ -20,7 +25,7 @@ func main() {
 	}
 
 	partOne(digitArray)
-	partTwo()
+	partTwo(digitArray)
 }
 
 func partOne(digitArray []int) {
@@ -35,8 +40,31 @@ func partOne(digitArray []int) {
 	fmt.Println("Part one: ", sum)
 }
 
-func partTwo() {
-	fmt.Println("Part two: ")
+func partTwo(digitArray []int) {
+	idBlocks := getBlockArray(digitArray)
+	sortedBlocks := sortBlockArray(idBlocks)
+
+	index := 0
+	sum := 0
+	for len(sortedBlocks) > 0 {
+		current := sortedBlocks[0]
+		sortedBlocks = sortedBlocks[1:]
+
+		if current.Id != -1 {
+			sum += current.Id * index
+			index++
+			current.Count--
+		} else {
+			index += current.Count
+			current.Count = 0
+		}
+
+		if current.Count > 0 {
+			sortedBlocks = append([]IdBlock{current}, sortedBlocks...)
+		}
+	}
+
+	fmt.Println("Part two: ", sum)
 }
 
 func getDigitArray(data []byte) ([]int, error) {
@@ -74,6 +102,21 @@ func getIdArray(digitArray []int) []int {
 	return result
 }
 
+func getBlockArray(digitArray []int) []IdBlock {
+	var idBLocks []IdBlock
+	value := 0
+	for i, count := range digitArray {
+			if i%2 == 0 {
+				idBLocks = append(idBLocks, IdBlock{Id: value, Count: count})
+				value++
+			} else {
+				idBLocks = append(idBLocks, IdBlock{Id: -1, Count: count})
+			}
+	}
+
+	return idBLocks
+}
+
 func sortArray(array []int) []int {
 	i, j := 0, len(array)-1
 
@@ -87,6 +130,34 @@ func sortArray(array []int) []int {
 	}
 
 	return trimArray(array)
+}
+
+func sortBlockArray(array []IdBlock) []IdBlock {
+	var sortedArray []IdBlock
+
+	for i := 0; i < len(array); i++ {
+		if array[i].Id == -1 {
+			handleEmpty(array, &sortedArray, i)
+		} else if array[i].Count > 0 {
+			sortedArray = append(sortedArray, array[i])
+		}
+	}
+
+	return sortedArray
+}
+
+func handleEmpty(array []IdBlock, sortedArray *[]IdBlock, i int) {
+	for cursor := len(array) - 1; array[i].Count > 0 && cursor > i; cursor-- {
+		if array[cursor].Id != -1 && array[cursor].Count <= array[i].Count {
+			*sortedArray = append(*sortedArray, array[cursor])
+			array[i].Count -= array[cursor].Count
+			array[cursor].Id = -1
+		}
+	}
+
+	if array[i].Count > 0 {
+		*sortedArray = append(*sortedArray, array[i])
+	}
 }
 
 func trimArray(array []int) []int {
