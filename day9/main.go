@@ -26,10 +26,9 @@ func main() {
 func partOne(digitArray []int) {
 	array := getIdArray(digitArray)
 	sortedArray := sortArray(array)
-	trimmedArray := trimArray(sortedArray)
 
 	sum := 0
-	for i, value := range trimmedArray {
+	for i, value := range sortedArray {
 		sum += value * i
 	}
 
@@ -87,7 +86,7 @@ func sortArray(array []int) []int {
 		}
 	}
 
-	return array
+	return trimArray(array)
 }
 
 func trimArray(array []int) []int {
