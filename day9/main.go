@@ -58,17 +58,17 @@ func getDigitArray(data []byte) ([]int, error) {
 func getIdArray(digitArray []int) []int {
 	var result []int
 
-	fileValue := 0
+	value := 0
 	for i, count := range digitArray {
 		for j := 0; j < count; j++ {
 			if i%2 == 0 {
-				result = append(result, fileValue)
+				result = append(result, value)
 			} else {
 				result = append(result, -1)
 			}
 		}
 		if i%2 == 0 {
-			fileValue++
+			value++
 		}
 	}
 
