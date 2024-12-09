@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"strconv"
-	"strings"
 )
 
 func main() {
@@ -27,16 +26,11 @@ func main() {
 func partOne(digitArray []int) {
 	array := getIdArray(digitArray)
 	sortedArray := sortArray(array)
+	trimmedArray := trimArray(sortedArray)
 
 	sum := 0
-	for index, digit := range sortedArray {
-		if(digit != ".") {
-			digitInt, err := strconv.Atoi(digit)
-			if err != nil {
-				log.Fatalf("Failed to convert character to digit: %v", err)
-			}
-			sum += digitInt * index
-		}
+	for i, value := range trimmedArray {
+		sum += value * i
 	}
 
 	fmt.Println("Part one: ", sum)
@@ -62,27 +56,31 @@ func getDigitArray(data []byte) ([]int, error) {
 
 }
 
-func getIdArray(digitArray []int) []string {
-	var result []string
+func getIdArray(digitArray []int) []int {
+	var result []int
 
-	for index, digit := range digitArray {
-		if index%2 == 0 {
-			temp := strings.Repeat(fmt.Sprintf("%d", index/2), digit)
-			result = append(result, strings.Split(temp, "")...)
-		} else {
-			temp := strings.Repeat(".", digit)
-			result = append(result, strings.Split(temp, "")...)
+	fileValue := 0
+	for i, count := range digitArray {
+		for j := 0; j < count; j++ {
+			if i%2 == 0 {
+				result = append(result, fileValue)
+			} else {
+				result = append(result, -1)
+			}
+		}
+		if i%2 == 0 {
+			fileValue++
 		}
 	}
 
 	return result
 }
 
-func sortArray(array []string) []string {
+func sortArray(array []int) []int {
 	i, j := 0, len(array)-1
 
 	for i < j {
-		if array[i] == "." {
+		if array[i] == -1 {
 			array[i], array[j] = array[j], array[i]
 			j--
 		} else {
@@ -91,4 +89,12 @@ func sortArray(array []string) []string {
 	}
 
 	return array
+}
+
+func trimArray(array []int) []int {
+	lastIndex := len(array) - 1
+	for lastIndex >= 0 && array[lastIndex] == -1 {
+		lastIndex--
+	}
+	return array[:lastIndex+1]
 }
