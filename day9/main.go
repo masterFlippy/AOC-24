@@ -53,7 +53,6 @@ func getDigitArray(data []byte) ([]int, error) {
 	}
 
 	return digits, nil
-
 }
 
 func getIdArray(digitArray []int) []int {
