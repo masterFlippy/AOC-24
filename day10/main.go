@@ -19,35 +19,51 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	copiedGrid := make([][]int, len(grid))
 	for i := range grid {
 		copiedGrid[i] = make([]int, len(grid[i]))
 		copy(copiedGrid[i], grid[i])
 	}
+	
 	rows, columns := len(grid), len(grid[0])
+	directions := [][]int{
+		{-1, 0},
+		{0, -1},
+		{1, 0},
+		{0, 1},
+	}
 
-	partOne(copiedGrid, rows, columns)
-	partTwo(grid, rows, columns)
+	partOne(copiedGrid, directions, rows, columns)
+	partTwo(grid, directions, rows, columns)
 }
 
-func partOne(grid [][]int, rows, columns int) {
+func partOne(grid, directions [][]int, rows, columns int) {
 	sum := 0
 	for row := 0; row < rows; row++ {
 		for column := 0; column < columns; column++ {
-
 			if grid[row][column] == 0 {
-				sum += getScore(grid, [2]int{row, column})
+				score := getScore(grid, directions, row, column)
+				sum += score
 			}
 		}
 	}
 
 	fmt.Println("Part one: ", sum)
-
 }
 
-func partTwo(grid [][]int, rows, columns int) {
+func partTwo(grid, directions [][]int, rows, columns int) {
+	sum := 0
+	for row := 0; row < rows; row++ {
+		for column := 0; column < columns; column++ {
+			if grid[row][column] == 0 {
+				rating := getRating(grid, directions, row, column)
+				sum += rating
+			}
+		}
+	}
 
-	fmt.Println("Part two: ")
+	fmt.Println("Part two: ", sum)
 }
 
 func getGrid(file *os.File) ([][]int, error) {
@@ -73,16 +89,10 @@ func getGrid(file *os.File) ([][]int, error) {
 	return grid, nil
 }
 
-func getScore(grid [][]int, start [2]int) int {
-	 directions := [][]int{
-		{-1, 0},
-		{0, -1},
-		{1, 0},
-		{0, 1},
-	}
+func getScore(grid, directions [][]int, startRow, startColumn int) int {
 	count := 0
 	visited := make(map[[2]int]bool)
-	stack := [][2]int{start}
+	stack := [][2]int{{startRow, startColumn}}
 
 	maxRow, maxColumn := len(grid), len(grid[0])
 
@@ -102,6 +112,34 @@ func getScore(grid [][]int, start [2]int) int {
 			if isInside(nextIndex[1], nextIndex[0], maxColumn, maxRow) &&
 				grid[nextIndex[0]][nextIndex[1]] == currentValue+1 && !visited[nextIndex] {
 				stack = append(stack, nextIndex)
+			}
+		}
+	}
+
+	return count
+}
+
+func getRating(grid, directions [][]int, startRow, startColumn int) int {
+	count := 0
+	stack := [][2]int{{startRow, startColumn}}
+
+	for len(stack) > 0 {
+		current := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+
+		currentRow, currentColumn := current[0], current[1]
+		currentValue := grid[currentRow][currentColumn]
+
+		if currentValue == 9 {
+			count++
+			continue
+		}
+
+		for _, direction := range directions {
+			nextRow, nextCol := currentRow+direction[0], currentColumn+direction[1]
+			if isInside(nextCol, nextRow, len(grid[0]), len(grid)) &&
+				grid[nextRow][nextCol] == currentValue+1 {
+				stack = append(stack, [2]int{nextRow, nextCol})
 			}
 		}
 	}
