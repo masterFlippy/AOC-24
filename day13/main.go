@@ -3,9 +3,12 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
+	"math"
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Coordinate struct {
@@ -22,19 +25,27 @@ func main() {
 		return
 	}
 	defer file.Close()
+	start := time.Now()
+	partOne(file, false)
+	elapsed := time.Since(start)
+	fmt.Printf("Part one %s\n", elapsed)
+	_, err = file.Seek(0, io.SeekStart)
+	if err != nil {
+		fmt.Println("Error seeking file:", err)
+		return
+	}
+	start = time.Now()
+	partTwo(file, true)
+	elapsed = time.Since(start)
+	fmt.Printf("Part two %s\n", elapsed)
+}
 
-	machines, err := getMachines(file)
+func partOne(file *os.File, isP2 bool) {
+	machines, err := getMachines(file, isP2)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-
-	partOne(machines)
-	partTwo()
-
-}
-
-func partOne(machines []Machine) {
 	maxInt := int(^uint(0) >> 1)
 	tokens := 0
 	for _, machine := range machines {
@@ -47,11 +58,22 @@ func partOne(machines []Machine) {
 	fmt.Println("Part one: ", tokens)
 }
 
-func partTwo() {
-	fmt.Println("Part two: ")
+func partTwo(file *os.File, isP2 bool) {
+	machines, err := getMachines(file, isP2)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	tokens := 0
+	for _, machine := range machines {
+		cost := getMinCostBigBrain(machine)
+		tokens += cost
+
+	}
+	fmt.Println("Part two: ", tokens)
 }
 
-func getMachines(file *os.File) ([]Machine, error) {
+func getMachines(file *os.File, isP2 bool) ([]Machine, error) {
 	var machines []Machine
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
@@ -78,6 +100,11 @@ func getMachines(file *os.File) ([]Machine, error) {
 			yPart = strings.Split(parts[1], "=")[1]
 			xPrize, _ := strconv.Atoi(xPart)
 			yPrize, _ := strconv.Atoi(yPart)
+
+			if isP2 {
+				xPrize += 10000000000000
+				yPrize += 10000000000000
+			}
 
 			machines = append(machines, Machine{
 				A:     Coordinate{X: xA, Y: yA},
@@ -116,4 +143,28 @@ func getMinCost(machine Machine, maxInt int) int {
 	}
 
 	return minCost
+}
+
+func getMinCostBigBrain(machine Machine) int {
+	ax, ay, bx, by, px, py := float64(machine.A.X), float64(machine.A.Y), float64(machine.B.X), float64(machine.B.Y), float64(machine.Prize.X), float64(machine.Prize.Y)
+
+	if by == 0 || ax*by == ay*bx {
+		return 0
+	}
+
+	a := (px - py*bx/by) / (ax - ay*bx/by)
+	b := (py - a*ay) / by
+
+	ra, rb := math.Round(a), math.Round(b)
+
+	if ra >= 0 && rb >= 0 {
+		product1 := ra*ax + rb*bx
+		product2 := ra*ay + rb*by
+
+		if product1 == px && product2 == py {
+			return int(ra)*3 + int(rb)
+		}
+	}
+
+	return 0
 }
