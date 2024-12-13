@@ -146,23 +146,21 @@ func getMinCost(machine Machine, maxInt int) int {
 }
 
 func getMinCostBigBrain(machine Machine) int {
-	ax, ay, bx, by, px, py := float64(machine.A.X), float64(machine.A.Y), float64(machine.B.X), float64(machine.B.Y), float64(machine.Prize.X), float64(machine.Prize.Y)
+	aX, aY := float64(machine.A.X), float64(machine.A.Y)
+	bX, bY := float64(machine.B.X), float64(machine.B.Y)
+	prizeX, prizeY := float64(machine.Prize.X), float64(machine.Prize.Y)
 
-	if by == 0 || ax*by == ay*bx {
-		return 0
-	}
+	a := (prizeX - prizeY*bX/bY) / (aX - aY*bX/bY)
+	b := (prizeY - a*aY) / bY
 
-	a := (px - py*bx/by) / (ax - ay*bx/by)
-	b := (py - a*ay) / by
+	roundA, roundB := math.Round(a), math.Round(b)
 
-	ra, rb := math.Round(a), math.Round(b)
+	if roundA >= 0 && roundB >= 0 {
+		result1 := roundA*aX + roundB*bX
+		result2 := roundA*aY + roundB*bY
 
-	if ra >= 0 && rb >= 0 {
-		product1 := ra*ax + rb*bx
-		product2 := ra*ay + rb*by
-
-		if product1 == px && product2 == py {
-			return int(ra)*3 + int(rb)
+		if result1 == prizeX && result2 == prizeY {
+			return int(roundA)*3 + int(roundB)
 		}
 	}
 
