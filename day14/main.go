@@ -60,8 +60,38 @@ func partOne(robots []Robot) {
 }
 
 func partTwo(robots []Robot) {
+	grid := [103][101]rune{}
+	iteration := 1
 
-	fmt.Println("Part two: ")
+	for {
+		for row := 0; row < 103; row++ {
+			for column := 0; column < 101; column++ {
+				grid[row][column] = '.'
+			}
+		}
+
+		for i := range robots {
+			robots[i].Position = moveRobot(robots[i], 101, 103)
+			grid[robots[i].Position.Y][robots[i].Position.X] = '#'
+		}
+
+		if isChristmasTree(grid) {
+			fmt.Println(iteration)
+			for row := 0; row < 103; row++ {
+				for column := 0; column < 101; column++ {
+					if grid[row][column] == '#' {
+						fmt.Print("#")
+					} else {
+						fmt.Print(".")
+					}
+				}
+				fmt.Println()
+			}
+			break
+		}
+
+		iteration++
+	}
 }
 
 func getRobots(input string) []Robot {
@@ -107,4 +137,35 @@ func moveRobot(robot Robot, gridWidth, gridHeight int) Coordinate {
 		robot.Position.Y = robot.Position.Y - gridHeight
 	}
 	return robot.Position
+}
+
+func isChristmasTree(grid [103][101]rune) bool {
+	for row := 0; row < 103; row++ {
+		for column := 0; column < 101; column++ {
+			if matchesTreePattern(grid, column, row) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func matchesTreePattern(grid [103][101]rune, x, y int) bool {
+	treePattern := [][]rune{
+		{'.', '.', '#', '.', '.'},
+		{'.', '#', '#', '#', '.'},
+		{'#', '#', '#', '#', '#'},
+	}
+
+	for deltaY, row := range treePattern {
+		for deltaX, cell := range row {
+			newY, newX := y+deltaY, x+deltaX
+
+			if (newY >= 103 || newX >= 101) || (grid[newY][newX] != cell) {
+				return false
+			}
+		}
+	}
+
+	return true
 }
