@@ -26,31 +26,37 @@ func main() {
 		fmt.Println("Error parsing input:", err)
 		return
 	}
-
-	partOne(bytes)
-	partTwo()
-
-}
-
-func partOne(bytes []Byte) {
-	grid := getGrid(bytes, 71, 1024)
-	rows, cols := len(grid), len(grid[0])
-	start := Byte{0, 0}
-	end := Byte{rows - 1, cols - 1}
 	directions := []Byte{
 		{-1, 0}, // up
 		{1, 0},  // down
 		{0, -1}, // left
 		{0, 1},  // right
 	}
-	
-	steps := findShortestPath(grid, start, end, rows, cols, directions)
 
-	fmt.Println("Part one:", steps)
+	partOne(bytes, directions)
+	partTwo(bytes, directions)
 
 }
 
-func partTwo() {
+func partOne(bytes []Byte, directions []Byte) {
+	grid := getGrid(bytes, 71, 1024)
+	rows, cols := len(grid), len(grid[0])
+	start := Byte{0, 0}
+	end := Byte{rows - 1, cols - 1}
+
+	steps := findShortestPath(grid, start, end, rows, cols, directions)
+
+	fmt.Println("Part one:", steps)
+}
+
+func partTwo(bytes []Byte, directions []Byte) {
+	gridSize := 71
+	start := Byte{0, 0}
+	end := Byte{70, 70}
+
+	stopByte := getStopByte(bytes, gridSize, len(bytes), gridSize, gridSize, start, end, directions)
+
+	fmt.Println("Part two:", stopByte)
 
 }
 
@@ -87,9 +93,10 @@ func getGrid(bytes []Byte, gridSize, byteCount int) [][]rune {
 	}
 
 	for i := 0; i < byteCount; i++ {
-		b := bytes[i]
-		if isInside(b.X, b.Y, gridSize, gridSize) {
-			grid[b.Y][b.X] = '#'
+		byte := bytes[i]
+		if isInside(byte.X, byte.Y, gridSize, gridSize) {
+			grid[byte.Y][byte.X] = '#'
+
 		}
 	}
 
@@ -118,8 +125,8 @@ func findShortestPath(grid [][]rune, start, end Byte, rows, columns int, directi
 				return steps
 			}
 
-			for _, d := range directions {
-				neighbor := Byte{current.X + d.X, current.Y + d.Y}
+			for _, direction := range directions {
+				neighbor := Byte{current.X + direction.X, current.Y + direction.Y}
 				if isInside(neighbor.X, neighbor.Y, columns, rows) &&
 					grid[neighbor.X][neighbor.Y] == '.' && !visited[neighbor] {
 					queue.PushBack(neighbor)
@@ -131,6 +138,29 @@ func findShortestPath(grid [][]rune, start, end Byte, rows, columns int, directi
 	}
 
 	return -1
+}
+
+func getStopByte(bytes []Byte, gridSize, byteCount, rows, columns int, start, end Byte, directions []Byte) Byte {
+	grid := make([][]rune, gridSize)
+	for i := 0; i < gridSize; i++ {
+		grid[i] = make([]rune, gridSize)
+		for j := 0; j < gridSize; j++ {
+			grid[i][j] = '.'
+		}
+	}
+
+	for i := 0; i < byteCount; i++ {
+		byte := bytes[i]
+		if isInside(byte.X, byte.Y, gridSize, gridSize) {
+			grid[byte.Y][byte.X] = '#'
+			steps := findShortestPath(grid, start, end, rows, columns, directions)
+			if steps == -1 {
+				return byte
+			}
+		}
+	}
+
+	return Byte{0, 0}
 }
 
 func isInside(column, row, length, height int) bool {
