@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Byte struct {
@@ -32,29 +33,36 @@ func main() {
 		{0, -1}, // left
 		{0, 1},  // right
 	}
-
+	start := time.Now()
 	partOne(bytes, directions)
+	elapsed := time.Since(start)
+	fmt.Printf("Part one %s\n", elapsed)
+
+	start = time.Now()
 	partTwo(bytes, directions)
+	elapsed = time.Since(start)
+	fmt.Printf("Part two %s\n", elapsed)
 
 }
 
 func partOne(bytes []Byte, directions []Byte) {
 	grid := getGrid(bytes, 71, 1024)
-	rows, cols := len(grid), len(grid[0])
+	rows, columns := len(grid), len(grid)
 	start := Byte{0, 0}
-	end := Byte{rows - 1, cols - 1}
+	end := Byte{rows - 1, columns - 1}
 
-	steps := findShortestPath(grid, start, end, rows, cols, directions)
+	steps := findShortestPath(grid, start, end, rows, columns, directions)
 
 	fmt.Println("Part one:", steps)
 }
 
 func partTwo(bytes []Byte, directions []Byte) {
 	gridSize := 71
+	rows, columns := gridSize, gridSize
 	start := Byte{0, 0}
-	end := Byte{70, 70}
+	end := Byte{rows - 1, columns - 1}
 
-	stopByte := getStopByte(bytes, gridSize, len(bytes), gridSize, gridSize, start, end, directions)
+	stopByte := getStopByte(bytes, gridSize, len(bytes), rows, columns, start, end, directions)
 
 	fmt.Println("Part two:", stopByte)
 
