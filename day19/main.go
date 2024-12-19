@@ -24,7 +24,7 @@ func main() {
 	fmt.Printf("Part one %s\n", elapsed)
 
 	start = time.Now()
-	partTwo()
+	partTwo(patterns, designs)
 	elapsed = time.Since(start)
 	fmt.Printf("Part two %s\n", elapsed)
 
@@ -42,9 +42,15 @@ func partOne(patterns, designs []string) {
 	fmt.Println("Part one:", count)
 }
 
-func partTwo() {
+func partTwo(patterns, designs []string) {
+	cache := make(map[string]int)
+	sum := 0
+	for _, design := range designs {
+		count := countPatterns(patterns, design, cache)
+		sum += count
+	}
 
-	fmt.Println("Part two:")
+	fmt.Println("Part Two:", sum)
 
 }
 
@@ -93,4 +99,26 @@ func canFormPattern(patterns []string, design string, cache map[string]bool) boo
 	cache[design] = false
 
 	return false
+}
+
+func countPatterns(colors []string, pattern string, cache map[string]int) int {
+	if pattern == "" {
+		return 1
+	}
+
+	if result, exists := cache[pattern]; exists {
+		return result
+	}
+
+	count := 0
+
+	for _, color := range colors {
+		if strings.HasPrefix(pattern, color) {
+			count += countPatterns(colors, pattern[len(color):], cache)
+		}
+	}
+
+	cache[pattern] = count
+
+	return count
 }
