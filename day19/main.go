@@ -88,9 +88,9 @@ func canFormPattern(patterns []string, design string, cache map[string]bool) boo
 		return result
 	}
 
-	for _, color := range patterns {
-		if strings.HasPrefix(design, color) {
-			if canFormPattern(patterns, design[len(color):], cache) {
+	for _, pattern := range patterns {
+		if strings.HasPrefix(design, pattern) {
+			if canFormPattern(patterns, design[len(pattern):], cache) {
 				cache[design] = true
 				return true
 			}
@@ -101,24 +101,24 @@ func canFormPattern(patterns []string, design string, cache map[string]bool) boo
 	return false
 }
 
-func countPatterns(colors []string, pattern string, cache map[string]int) int {
-	if pattern == "" {
+func countPatterns(patterns []string, design string, cache map[string]int) int {
+	if design == "" {
 		return 1
 	}
 
-	if result, exists := cache[pattern]; exists {
+	if result, exists := cache[design]; exists {
 		return result
 	}
 
 	count := 0
 
-	for _, color := range colors {
-		if strings.HasPrefix(pattern, color) {
-			count += countPatterns(colors, pattern[len(color):], cache)
+	for _, pattern := range patterns {
+		if strings.HasPrefix(design, pattern) {
+			count += countPatterns(patterns, design[len(pattern):], cache)
 		}
 	}
 
-	cache[pattern] = count
+	cache[design] = count
 
 	return count
 }
