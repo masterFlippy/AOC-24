@@ -55,8 +55,8 @@ func partTwo(numbers []int) {
 
 func getSecretNumber(number int) int {
 	number = (number*64 ^ number) % 16777216
-	number = ((number/32 ^ number) % 16777216)
-	number = ((number*2048 ^ number) % 16777216)
+	number = (number/32 ^ number) % 16777216
+	number = (number*2048 ^ number) % 16777216
 	return number
 }
 
