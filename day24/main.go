@@ -71,15 +71,12 @@ func partOne(valueMap map[string]int, operations []Operation) {
 	}
 
 	filteredMap := make(map[string]int)
+	var keys []string
 	for key, value := range valueMap {
 		if strings.HasPrefix(key, "z") {
+			keys = append(keys, key)
 			filteredMap[key] = value
 		}
-	}
-
-	keys := make([]string, 0, len(valueMap))
-	for key := range filteredMap {
-		keys = append(keys, key)
 	}
 
 	sort.Sort(sort.Reverse(sort.StringSlice(keys)))
@@ -94,6 +91,7 @@ func partOne(valueMap map[string]int, operations []Operation) {
 		fmt.Println("Error:", err)
 		return
 	}
+	
 	fmt.Println("Part one:", decimal)
 }
 
