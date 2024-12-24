@@ -58,8 +58,7 @@ func partOne(valueMap map[string]int, operations []Operation) {
 						valueMap[operation.Result] = 0
 					}
 				case "XOR":
-					if (valueMap[operation.Input1] == 1 && valueMap[operation.Input2] == 0) ||
-						(valueMap[operation.Input1] == 0 && valueMap[operation.Input2] == 1) {
+					if valueMap[operation.Input1] != valueMap[operation.Input2] {
 						valueMap[operation.Result] = 1
 					} else {
 						valueMap[operation.Result] = 0
