@@ -46,23 +46,11 @@ func partOne(valueMap map[string]int, operations []Operation) {
 			if exists1 && exists2 {
 				switch operation.Operation {
 				case "AND":
-					if valueMap[operation.Input1] == 1 && valueMap[operation.Input2] == 1 {
-						valueMap[operation.Result] = 1
-					} else {
-						valueMap[operation.Result] = 0
-					}
+					valueMap[operation.Result] = booleanToInt(valueMap[operation.Input1] == 1 && valueMap[operation.Input2] == 1)
 				case "OR":
-					if valueMap[operation.Input1] == 1 || valueMap[operation.Input2] == 1 {
-						valueMap[operation.Result] = 1
-					} else {
-						valueMap[operation.Result] = 0
-					}
+					valueMap[operation.Result] = booleanToInt(valueMap[operation.Input1] == 1 || valueMap[operation.Input2] == 1)
 				case "XOR":
-					if valueMap[operation.Input1] != valueMap[operation.Input2] {
-						valueMap[operation.Result] = 1
-					} else {
-						valueMap[operation.Result] = 0
-					}
+					valueMap[operation.Result] = booleanToInt(valueMap[operation.Input1] != valueMap[operation.Input2])
 				}
 			} else {
 				remaining = true
@@ -91,7 +79,7 @@ func partOne(valueMap map[string]int, operations []Operation) {
 		fmt.Println("Error:", err)
 		return
 	}
-	
+
 	fmt.Println("Part one:", decimal)
 }
 
@@ -151,4 +139,11 @@ func parseInput(file *os.File) (map[string]int, []Operation) {
 	}
 
 	return valueMap, operations
+}
+
+func booleanToInt(boolean bool) int {
+	if boolean {
+		return 1
+	}
+	return 0
 }
